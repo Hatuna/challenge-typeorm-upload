@@ -8,7 +8,7 @@ import {
 export default class CreateTransactions1587379723548
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.createTable(
+    await queryRunner.createTable(
       new Table({
         name: 'transactions',
         columns: [
@@ -24,12 +24,14 @@ export default class CreateTransactions1587379723548
             type: 'varchar',
           },
           {
-            name: 'value',
-            type: 'integer',
+            name: 'type',
+            type: 'varchar',
           },
           {
-            name: 'category_id',
-            type: 'uuid',
+            name: 'value',
+            type: 'decimal',
+            precision: 10,
+            scale: 2,
           },
           {
             name: 'created_at',
@@ -44,21 +46,9 @@ export default class CreateTransactions1587379723548
         ],
       }),
     );
-    await queryRunner.createForeignKey(
-      'transactions',
-      new TableForeignKey({
-        name: 'TransactionCategory',
-        columnNames: ['category_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'categories',
-        onDelete: 'SET NULL',
-        onUpdate: 'CASCADE',
-      }),
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('transactions', 'TransactionCategory');
     await queryRunner.dropTable('transactions');
   }
 }
